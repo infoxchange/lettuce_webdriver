@@ -2,6 +2,12 @@
 Django-specific extensions
 """
 
+import socket
+import urlparse
+
+from lettuce import step
+from lettuce.django import server
+
 
 def site_url(url):
     """
