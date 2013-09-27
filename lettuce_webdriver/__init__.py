@@ -24,7 +24,7 @@ class ConfigError(Exception):
 
 
 # pylint:disable=too-many-branches, too-many-statements
-def initialize(config, default):
+def initialize(config, default, capabilities=None):
     """
     Initialize lettuce-webdriver using specified config.
 
@@ -79,6 +79,9 @@ def initialize(config, default):
             raise ConfigError("Must specify a hub or host to connect to")
 
         config['command_executor'] = hub
+
+    if capabilities:
+        caps.update(capabilities)
 
     if remote or \
        browser['webdriver'] == 'chrome' or \
