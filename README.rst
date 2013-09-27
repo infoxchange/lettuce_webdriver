@@ -13,7 +13,7 @@ Requirements
 ============
 
 * `lettuce <http://lettuce.it/>`_
-* `selenium 2.8 or higher <http://pypi.python.org/pypi/selenium>`_
+* `selenium 2.30 or higher <http://pypi.python.org/pypi/selenium>`_
 
 Setting Up lettuce_webdriver
 ============================
@@ -24,12 +24,60 @@ learn about the additional step definitions provided by
 desired::
     
     from lettuce import before, world
-    from selenium import webdriver
-    import lettuce_webdriver.webdriver
-    
+    import lettuce_webdriver
+
     @before.all
     def setup_browser():
-        world.browser = webdriver.Firefox()
+        world.browser = lettuce_webdriver.initialize('browsers.yaml', 'firefox')
+
+    @after.all
+    def destroy_browser():
+        world.browser.quit()
+
+
+Where ``firefox`` is your default driver to use and ``browsers.yaml`` contains
+your browser configurations::
+
+    firefox:
+        webdriver: firefox
+
+    remote-ie:
+        webdriver: ie
+        remote: true
+        host: int-selenium-hub
+        capabilities:
+            version: 10
+
+Accepted parameters are ``webdriver``, ``remote``, ``host``, ``hub`` and
+``capabilities``. ``browsers.yaml`` normalizes ``capabilities`` and
+``desired_capabilities`` based on webdriver.
+
+The default webdriver, host and hub can be overridden using the ``WEBDRIVER``,
+``WEBDRIVER_HOST`` and ``WEBDRIVER_HUB`` environment variables respectively::
+
+    WEBDRIVER=remote-ie lettuce
+
+You can use YAML includes to set configuration for a common service, e.g.
+your Selenium hub, or Browserstack::
+
+    defaults:
+        - &browserstack
+          remote: true
+          host: hub.browserstack.com
+        - &browserstack_key
+          browserstack.user: mr.lettuce
+          browerstack.key: abcd1234
+
+    browserstack-ie10:
+        <<: *browserstack
+        webdriver: ie
+        capabilities:
+            <<: *browserstack_key
+            version: 10
+
+The old method for setting up lettuce_webdriver, where you defined your
+WebDriver yourself is still supported. Include Selenium directly and assign a
+webdriver to ``world.browser``.
 
 Usage
 =====
