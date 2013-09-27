@@ -103,7 +103,11 @@ def initialize(config, default, capabilities=None):
 
         driver = getattr(selenium.webdriver, driver)
 
-    return driver(**config)
+    driver = driver(**config)
+    driver.config = config
+    driver.requested_capabilities = caps
+
+    return driver
 
 
 @after.each_scenario  # pylint:disable=no-member
