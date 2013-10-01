@@ -8,6 +8,16 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
+REQUIREMENTS = [
+    'lettuce',
+    'selenium >= 2.30.0',
+    'PyYAML',
+]
+
+TEST_REQUIREMENTS = [
+    'nose',
+]
+
 setup(name='lettuce_webdriver',
       version=__version__,
       description='Selenium webdriver extension for lettuce',
@@ -26,7 +36,7 @@ setup(name='lettuce_webdriver',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      tests_require = ['lettuce', 'selenium', 'nose'],
-      install_requires=['lettuce','selenium>=2.30.0'],
+      tests_require=REQUIREMENTS + TEST_REQUIREMENTS,
+      install_requires=REQUIREMENTS,
       test_suite="lettuce_webdriver",
       )
