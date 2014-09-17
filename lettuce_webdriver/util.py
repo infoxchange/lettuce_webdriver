@@ -66,10 +66,21 @@ def field_xpath(field, attribute):
 
 
 def find_button(browser, value):
-    return find_field_with_value(browser, 'submit', value) or \
-        find_field_with_value(browser, 'reset', value) or \
-        find_field_with_value(browser, 'button', value) or \
-        find_field_with_value(browser, 'image', value)
+    input_types = (
+        'submit',
+        'reset',
+        'button',
+        'image',
+    )
+
+    xpath = '|'.join(
+        '//input[@type="{type_}" and normalize-space(@value)="{value}"]'.format(
+            type_=type_, value=value)
+        for type_ in input_types)
+
+    xpath += '|//button[normalize-space(text())="{value}"]'.format(value=value)
+
+    return browser.find_element_by_xpath(xpath)
 
 
 def find_field_with_value(browser, field, value):
