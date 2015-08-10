@@ -120,11 +120,21 @@ class XPathSelector(object):
         return getattr(self[0], attr)
 
     def visible(self):
+        """
+        Return the set of visible elements.
+
+        Evaluates any XPath immediately.
+        """
         return XPathSelector(self.browser,
                              elements=[elem for elem in self
                                        if elem.is_displayed()])
 
     def enabled(self):
+        """
+        Return the set of enabled elements.
+
+        Evaluates any XPath immediately.
+        """
         return XPathSelector(self.browser,
                              elements=[elem for elem in self
                                        if elem.is_enabled()])
