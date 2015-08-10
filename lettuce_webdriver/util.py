@@ -119,13 +119,26 @@ class XPathSelector(object):
             'Must be a single element, have {0}'.format(len(self))
         return getattr(self[0], attr)
 
+    def visible(self):
+        return XPathSelector(self.browser,
+                             elements=[elem for elem in self
+                                       if elem.is_displayed()])
+
+    def enabled(self):
+        return XPathSelector(self.browser,
+                             elements=[elem for elem in self
+                                       if elem.is_enabled()])
+
 
 def element_id_by_label(browser, label):
     """Return the id of a label's for attribute"""
     label = XPathSelector(browser,
-                          str('//label[contains(., "%s")]' % label))
+                          str('//label[contains(., "%s")]' % label))\
+        .visible()
+
     if not label:
         return False
+
     return label.get_attribute('for')
 
 
@@ -210,8 +223,9 @@ def find_field_by_name(browser, field, name):
 
 def find_field_by_value(browser, field, name):
     xpath = field_xpath(field, 'value')
-    elems = [elem for elem in XPathSelector(browser, str(xpath % name))
-             if elem.is_displayed() and elem.is_enabled()]
+    elems = XPathSelector(browser, str(xpath % name))\
+        .visible()\
+        .enabled()
 
     # sort by shortest first (most closely matching)
     if field == 'button':
@@ -222,6 +236,7 @@ def find_field_by_value(browser, field, name):
 
     if elems:
         elems = [elems[0]]
+
     return elems
 
 
