@@ -196,9 +196,12 @@ def find_field(browser, field, value):
     the name of the element, then a label for the element.
 
     """
-    return find_field_by_id(browser, field, value) + \
-        find_field_by_name(browser, field, value) + \
+    return (
+        find_field_by_id(browser, field, value) +
+        find_field_by_name(browser, field, value) +
         find_field_by_label(browser, field, value)
+    )\
+        .visible()
 
 
 def find_any_field(browser, field_types, field_name):
